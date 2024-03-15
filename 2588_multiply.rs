@@ -12,7 +12,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     for c in second.chars().rev() {
         let d = c.to_digit(10)
-            .ok_or::<String>("Invalid digit".into())?;
+            .ok_or("Invalid digit")?; // String implements the Error trait.
         let res = first * d;
         result += res * digit_place;
         digit_place *= 10;
