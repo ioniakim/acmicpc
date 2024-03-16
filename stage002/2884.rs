@@ -9,13 +9,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map(str::parse)
         .collect::<Result<Vec<_>, _>>()?;
 
-    let hour: i8 = nums[0];
-    let minute: i8 = nums[1];
+    let mut adjusted_hour = nums[0];
+    let mut adjusted_minute = nums[1];
 
-    let mut adjusted_hour = hour;
-    let mut adjusted_minute = minute;
-
-    if minute < 45 {
+    if adjusted_minute < 45 {
         adjusted_hour = adjusted_hour - 1;
         adjusted_minute = 60 - 45 + adjusted_minute;
     } else {
