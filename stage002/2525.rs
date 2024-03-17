@@ -8,6 +8,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
         .map(str::parse)
         .collect::<Result<Vec<_>, _>>()?;
 
+    if time.len() != 2 && !is_valid_time(time[0], time[1]) {
+        return Err("Invalid time format".into());
+    }
+
     let hour: u16 = time[0];  // 0<= hour <= 23
     let minute: u16 = time[1];  // 0 <= minute <= 59
 
@@ -16,20 +20,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
 
     let duration: u16 = input.trim().parse()?; // 0 <= duration <= 1000
 
+    let in_minutes = hour * 60 + minute + duration;
 
-    let duration_hour = duration / 60;
-    let duration_minute = duration % 60;
-
-    let mut end_minute = minute + duration_minute;
-    let mut end_hour = (hour + duration_hour) % 24;
-
-    if end_minute >= 60 {
-        end_hour = if end_hour + 1 > 23 { 0 } else { end_hour + 1 };
-        end_minute = end_minute - 60;
-    }
+    let end_hour = (in_minutes / 60) % 24;
+    let end_minute = in_minutes % 60;
 
     println!("{} {}", end_hour, end_minute);
 
     Ok(())
+}
 
+fn is_valid_time(hour: u16, minute: u16) -> bool {
+    hour < 24 && minute < 60
 }
