@@ -26,7 +26,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         result += price * num;
     }
 
-    let answer = if result == total_sum { "Yes" } else { "No" };
+    let answer = match result == total_sum {
+        true => "Yes",
+        false => "No",
+    };
 
     println!("{answer}");
     Ok(())
