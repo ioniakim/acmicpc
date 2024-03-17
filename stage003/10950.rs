@@ -9,11 +9,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for _ in 0..n {
         input.clear();
         io::stdin().read_line(&mut input)?;
-        let nums: Vec<u16> = input.split_whitespace()
-            .map(str::parse)
-            .collect::<Result<Vec<_>, _>>()?;
+        let sum: u16 = input.split_whitespace()
+            .take(2)
+            .map(str::parse::<u16>)
+            .sum::<Result<u16, _>>()?;
 
-        println!("{}", nums[0] + nums[1]);
+        println!("{}", sum);
     }
 
     Ok(())
