@@ -19,8 +19,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     input.clear();
     io::stdin().read_line(&mut input)?;
     let result = input.split_whitespace()
-        .map(str::parse::<i32>)
-        .map(Result::unwrap)
+        .flat_map(str::parse::<i32>)
         .filter(|&r| r < x)
         .map(|v| v.to_string())
         .collect::<Vec<_>>()
