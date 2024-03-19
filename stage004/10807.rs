@@ -19,13 +19,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     io::stdin().read_line(&mut input)?;
     let v: i8 = input.trim().parse()?;
 
-    let mut count = 0u8;
-
-    for &i in &numbers {
-        if v == i {
-            count += 1;
-        }
-    }
+    let count = numbers.into_iter()
+        .filter(|&i| i == v)
+        .count();
 
     writeln!(out, "{}", count)?;
     Ok(())
