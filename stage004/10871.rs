@@ -25,7 +25,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .collect::<Vec<_>>()
         .join(" ");
 
-    writeln!(out, "{}", result)?;
+    writeln!(out, "{result}")?;
 
     Ok(())
 }
