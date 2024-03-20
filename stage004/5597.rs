@@ -3,13 +3,13 @@ use std::io;
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut project = vec![false; 30];
 
-    let mut input = String::new();
-    for _ in 0..28 {
-        io::stdin().read_line(&mut input)?;
-        let submit: usize = input.trim().parse()?;
-        input.clear();
-        project[submit - 1] = true;
-    }
+    io::stdin().lines()
+        .take(28)
+        .flatten()  // Rip off the Result and leave the value only.
+        .for_each(|s| {
+            let idx: usize = s.trim().parse().expect("Failed to parse");
+            project[idx - 1] = true;
+        });
 
     project.into_iter()
         .enumerate()
