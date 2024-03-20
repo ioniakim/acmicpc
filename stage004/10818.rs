@@ -15,10 +15,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut max = i32::MIN;
     input.split_whitespace()
         .take(n)
-        .map(str::parse)
+        .flat_map(str::parse)
         .for_each(|v| {
-            min = std::cmp::min(min, v.clone().unwrap());
-            max = std::cmp::max(max, v.clone().unwrap());
+            min = std::cmp::min(min, v);
+            max = std::cmp::max(max, v);
         });
 
     writeln!(out, "{} {}", min, max)?;
