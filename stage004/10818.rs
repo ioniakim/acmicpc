@@ -45,3 +45,18 @@ fn use_flat_map(n: usize, input: &String) -> Result<(i32, i32), Box<dyn std::err
         });
     Ok((min, max))
 }
+
+#[allow(dead_code)]
+fn use_map(n: usize, input: &String) -> Result<(i32, i32), Box<dyn std::error::Error>> {
+    let mut min = i32::MAX;
+    let mut max = i32::MIN;
+    input.split_whitespace()
+        .take(n)
+        .map(str::parse)
+        .for_each(|v| {
+            let v = v.unwrap();
+            min = std::cmp::min(min, v);
+            max = std::cmp::max(max, v);
+        });
+    Ok((min, max))
+}
