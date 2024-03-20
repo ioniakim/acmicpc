@@ -11,6 +11,29 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     input.clear();
     io::stdin().read_line(&mut input)?;
+    let (min, max) = use_for(n, &input)?;
+
+    writeln!(out, "{} {}", min, max)?;
+
+    Ok(())
+}
+
+#[allow(dead_code)]
+fn use_for(n: usize, input: &String) -> Result<(i32, i32), Box<dyn std::error::Error>> {
+    let mut min = i32::MAX;
+    let mut max = i32::MIN;
+
+    for result in input.split_whitespace().take(n).map(str::parse::<i32>) {
+        let result = result?;
+        min = std::cmp::min(min, result);
+        max = std::cmp::max(max, result);
+    }
+
+    Ok((min, max))
+}
+
+#[allow(dead_code)]
+fn use_flat_map(n: usize, input: &String) -> Result<(i32, i32), Box<dyn std::error::Error>> {
     let mut min = i32::MAX;
     let mut max = i32::MIN;
     input.split_whitespace()
@@ -20,8 +43,5 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             min = std::cmp::min(min, v);
             max = std::cmp::max(max, v);
         });
-
-    writeln!(out, "{} {}", min, max)?;
-
-    Ok(())
+    Ok((min, max))
 }
