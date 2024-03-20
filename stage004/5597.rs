@@ -1,9 +1,6 @@
 use std::io;
-use io::Write;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut out = io::BufWriter::new(io::stdout());
-
     let mut project = vec![false; 30];
 
     let mut input = String::new();
@@ -14,11 +11,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         project[submit - 1] = true;
     }
 
-    for (i, submit) in project.into_iter().enumerate() {
-        if !submit {
-            writeln!(out, "{}", i + 1)?;
-        }
-    }
+    project.into_iter()
+        .enumerate()
+        .filter(|(_, submit)| !submit)
+        .for_each(|(idx, _)| println!("{}", idx + 1));
 
     Ok(())
 }
