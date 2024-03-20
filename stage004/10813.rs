@@ -13,8 +13,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let n = first_line[0];
     let m = first_line[1];
 
-    let mut baskets: Vec<String> = Vec::with_capacity(n);
-    (0..n).for_each(|i| baskets.push((i + 1).to_string()));
+    let mut baskets: Vec<String> = (0..n).map(|i| (i + 1).to_string()).collect::<Vec<_>>();
 
     for _ in 0..m {
         input.clear();
