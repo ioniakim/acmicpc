@@ -11,13 +11,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     input.clear();
     io::stdin().read_line(&mut input)?;
-    let numbers: Vec<i32> = input.split_whitespace()
+    let mut min = i32::MAX;
+    let mut max = i32::MIN;
+    input.split_whitespace()
         .take(n)
         .map(str::parse)
-        .collect::<Result<Vec<_>, _>>()?;
-
-    let min = numbers.iter().min().unwrap();
-    let max = numbers.iter().max().unwrap();
+        .for_each(|v| {
+            min = std::cmp::min(min, v.clone().unwrap());
+            max = std::cmp::max(max, v.clone().unwrap());
+        });
 
     writeln!(out, "{} {}", min, max)?;
 
