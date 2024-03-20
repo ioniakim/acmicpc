@@ -23,7 +23,7 @@ fn use_for(n: usize, input: &String) -> Result<(i32, i32), Box<dyn std::error::E
     let mut min = i32::MAX;
     let mut max = i32::MIN;
 
-    for result in input.split_whitespace().take(n).map(str::parse::<i32>) {
+    for result in input.split_whitespace().take(n).map(str::parse) {
         let result = result?;
         min = std::cmp::min(min, result);
         max = std::cmp::max(max, result);
