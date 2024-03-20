@@ -6,13 +6,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut input = String::new();
     io::stdin().read_line(&mut input)?;
-    let first_values: Vec<u8> = input.split_whitespace()
+    let first_line: Vec<usize> = input.split_whitespace()
         .map(str::parse)
         .collect::<Result<Vec<_>, _>>()?;
-    let n = first_values[0];
-    let m = first_values[1];
+    let n = first_line[0];
+    let m = first_line[1];
 
-    let mut baskets = vec![0u8; n as usize];
+    let mut baskets = vec![0u8; n];
 
     for _ in 0..m {
         input.clear();
