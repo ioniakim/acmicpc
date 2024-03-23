@@ -1,6 +1,8 @@
 use std::io;
+use io::Write;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut out = io::BufWriter::new(io::stdout());
     let mut input = String::new();
     io::stdin().read_line(&mut input)?;
     let n: usize = input.trim().parse()?;
@@ -8,10 +10,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for line in io::stdin().lines().take(n) {
         let line = line?;
         let s = line.trim().to_owned();
-        let first = s.chars().next().ok_or::<String>("first".into())?;
-        let last = s.chars().last().ok_or::<String>("last".into())?;
+        let first = s.chars().nth(0).ok_or::<String>("first".into())?;
+        let last = s.chars().nth_back(0).ok_or::<String>("last".into())?;
 
-        println!("{}{}", first, last);
+        writeln!(out, "{first}{last}")?;
     }
 
     Ok(())
