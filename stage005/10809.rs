@@ -1,25 +1,28 @@
 use std::io;
-use io::Write;
-use std::collections::HashMap;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut out = io::BufWriter::new(io::stdout());
+    let mut alphabet_positions = vec![-1;
+        'z' as usize - 'a' as usize + 1];
+
     let mut input = String::new();
     io::stdin().read_line(&mut input)?;
-
-    let mut char_position: HashMap<char, usize> = HashMap::new();
-    input.trim().chars()
-        .enumerate()
-        .for_each(|(i, c)| {
-            char_position.entry(c).or_insert(i);
+    input.trim().chars().enumerate()
+        .map(|(i, c)| {
+            let idx = c as usize - 'a' as usize;
+            (i, idx)
+        })
+        .for_each(|(i, idx)| {
+            if alphabet_positions[idx] == -1 {
+                alphabet_positions[idx] = i as i8
+            }
         });
 
-    for c in 'a'..='z' {
-        match char_position.get(&c) {
-            Some(i) => write!(out, "{i} ")?,
-            None => write!(out, "-1 ")?,
-        }
-    }
+    let result = alphabet_positions.iter()
+        .map(i8::to_string)
+        .collect::<Vec<_>>()
+        .join(" ");
+
+    println!("{result}");
 
     Ok(())
 }
