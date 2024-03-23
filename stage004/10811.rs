@@ -16,18 +16,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for line in io::stdin().lines().take(m) {
         let line = line?;
 
-        let mut terms: Vec<usize> = line.split_whitespace()
+        let terms: Vec<usize> = line.split_whitespace()
             .flat_map(str::parse)
             .collect::<Vec<_>>();
 
-        while terms[0] < terms[1] {
-            let temp = baskets[terms[0]];
-            baskets[terms[0]] = baskets[terms[1]];
-            baskets[terms[1]] = temp;
-
-            terms[0] += 1;
-            terms[1] -= 1;
-        }
+        baskets[terms[0]..=terms[1]].reverse();
     }
 
     println!("{}", baskets[1..].iter().map(u8::to_string).collect::<Vec<_>>().join(" "));
