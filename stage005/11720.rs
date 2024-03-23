@@ -7,10 +7,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     input.clear();
     io::stdin().read_line(&mut input)?;
-    let sum: u16 = input.trim().chars()
+    let sum = input.trim().chars()
         .take(n)
-        .map(|c| c as u16 - '0' as u16)
-        .sum::<u16>();
+        .map(|c| c.to_digit(10))
+        .sum::<Option<u32>>().ok_or::<String>("Failed".into())?;
     println!("{sum}");
     Ok(())
 }
