@@ -6,14 +6,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let word = input.trim().to_owned();
 
-    let mut iter = word.chars();
-    let mut rev = word.chars().rev();
-    for _ in 0..word.len() / 2 {
-        if iter.next().unwrap() != rev.next().unwrap() {
-            println!("0");
-            return Ok(())
-        }
+    let forward = word.chars();
+    let backward = word.chars().rev();
+    match forward.zip(backward).all(|(f1, b2)| f1 == b2) {
+        true => println!("1"),
+        false => println!("0"),
     }
-    println!("1");
     Ok(())
 }
