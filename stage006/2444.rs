@@ -6,23 +6,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut input = String::new();
     io::stdin().read_line(&mut input)?;
-    let n: usize = input.trim().parse()?;
+    let height: usize = input.trim().parse()?;
 
-    let mut width = 1usize;
-    (1..n).for_each(|_| {
-        width += 2;
-    });
+    let width = (2 * height) - 1;
 
-    let mut prev: usize = 1;
-    for _ in 0..n {
-        writeln!(out, "{: ^width$}", "*".repeat(prev))?;
-        prev += 2;
+    for i in 0..height {
+        let count = i * 2 + 1;
+        writeln!(out, "{: ^width$}", "*".repeat(count))?;
     }
 
-    prev -= 2;
-    for _ in 1..n {
-        prev -= 2;
-        writeln!(out, "{: ^width$}", "*".repeat(prev))?;
+    for i in (0..height - 1).rev() {
+        let count = i * 2 + 1;
+        writeln!(out, "{: ^width$}", "*".repeat(count))?;
     }
 
     Ok(())
