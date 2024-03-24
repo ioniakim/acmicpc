@@ -18,23 +18,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         alpha_count[index(c)] += 1;
     });
 
-    let mut max_index = 0u8;
-    let mut max_value = u16::MIN;
-    let mut tie = false;
-    for (idx, value) in alpha_count.iter().enumerate(){
-        if max_value < *value {
-            max_index = idx as u8;
-            max_value = *value;
-            tie = false;
-        } else if max_value == *value {
-            tie = true;
-        }
-    }
-
-    if tie {
+    let max = alpha_count.iter().max().ok_or::<String>("Failed to find the max".into())?;
+    let pos = alpha_count.iter().position(|c| c == max).ok_or::<String>("Failed to find the max".into())?;
+    let rpos = alpha_count.iter().rposition(|c| c == max).ok_or::<String>("Failed to find the max reversely".into())?;
+    if pos != rpos {
         println!("?");
     } else {
-        println!("{}", ('A' as u8  + max_index) as char);
+        println!("{}", ('A' as u8  + pos as u8) as char);
     }
+
     Ok(())
 }
