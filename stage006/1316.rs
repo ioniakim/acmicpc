@@ -1,6 +1,5 @@
 use std::io;
 
-const CHAR_SIZE: usize = ('z' as u8 - 'a' as u8 + 1) as usize;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let count: usize = io::stdin().lines().skip(1)
@@ -17,6 +16,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn is_group_word(word: &str) -> bool {
+    const CHAR_SIZE: usize = ('z' as u8 - 'a' as u8 + 1) as usize;
+
     let mut appeared = [false; CHAR_SIZE];
 
     let mut prev = usize::MAX;
