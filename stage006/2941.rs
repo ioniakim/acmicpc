@@ -6,70 +6,70 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     io::stdin().read_line(&mut input)?;
 
     let word = input.trim().as_bytes();
-    println!("{}", word[0] as char);
-    let mut iter = input.trim().chars();
 
     let mut count = 0;
 
-    while let Some(c) = iter.next() {
-        count += 1 + match c {
-            'c' => c_start(&mut iter),
-            'd' => d_start(&mut iter),
-            'l' => l_start(&mut iter),
-            'n' => n_start(&mut iter),
-            's' => s_start(&mut iter),
-            'z' => z_start(&mut iter),
-            _ => 0
-        }
+    let mut pos = 0;
+    while pos < word.len() {
+        pos += match word[pos] as char {
+            'c' => c_start(&word, pos + 1),
+            'd' => d_start(&word, pos + 1),
+            'l' => l_start(&word, pos + 1),
+            'n' => n_start(&word, pos + 1),
+            's' => s_start(&word, pos + 1),
+            'z' => z_start(&word, pos + 1),
+            _ => 0,
+        };
+
+        count += 1;
+        pos += 1;
     }
+
     println!("{count}");
     Ok(())
 }
 
-fn c_start(iter: &mut dyn std::iter::Iterator<Item = char>) -> usize {
-    match iter.next() {
-        Some(c) if c == '=' || c == '-'  => 0,
-        _ => 1,
+fn c_start(word: &[u8], pos: usize) -> usize {
+    match word[pos] as char {
+        '=' | '-'  => 1,
+        _ => 0,
     }
 }
 
-fn d_start(iter: &mut dyn std::iter::Iterator<Item = char>) -> usize {
-    match iter.next() {
-        Some(c) if c == '-' => 0,
-        Some(c) if c == 'z' => {
-            match iter.next() {
-                Some(c) if c == '=' => 0,
-                _ => 2,
-            }
+fn d_start(word: &[u8], pos: usize) -> usize {
+    match word[pos] as char {
+        '-' => 1,
+        'z' => {
+            if word[pos + 1] as char == '=' { return 2 } else { 0 }
         }
-        _ => 1,
+        _ => 0,
     }
 }
 
-fn l_start(iter: &mut dyn std::iter::Iterator<Item = char>) -> usize {
-    match iter.next() {
-        Some(c) if c == 'j' => 0,
-        _ => 1,
+fn l_start(word: &[u8], pos: usize) -> usize {
+    match word[pos] as char {
+        'j' => 1,
+        _ => 0,
     }
 }
 
-fn n_start(iter: &mut dyn std::iter::Iterator<Item = char>) -> usize {
-    match iter.next() {
-        Some(c) if c == 'j' => 0,
-        _ => 1,
+fn n_start(word: &[u8], pos: usize) -> usize {
+    match word[pos] as char {
+        'j' => 1,
+        _ => 0,
     }
 }
 
-fn s_start(iter: &mut dyn std::iter::Iterator<Item = char>) -> usize {
-    match iter.next() {
-        Some(c) if c == '=' => 0,
-        _ => 1,
+fn s_start(word: &[u8], pos: usize) -> usize {
+    match word[pos] as char {
+        '=' => 1,
+        _ => 0,
     }
 }
 
-fn z_start(iter: &mut dyn std::iter::Iterator<Item = char>) -> usize {
-    match iter.next() {
-        Some(c) if c == '=' => 0,
-        _ => 1,
+fn z_start(word: &[u8], pos: usize) -> usize {
+    match word[pos] as char {
+        '=' => 1,
+        _ => 0,
     }
 }
