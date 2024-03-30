@@ -11,18 +11,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut pos = 0;
     while pos < word_bytes.len() {
-        if pos + 1 < word_bytes.len() {
-            pos += match word_bytes[pos] as char {
-                'c' => c_start(&word_bytes, pos + 1),
-                'd' => d_start(&word_bytes, pos + 1),
-                'l' => l_start(&word_bytes, pos + 1),
-                'n' => n_start(&word_bytes, pos + 1),
-                's' => s_start(&word_bytes, pos + 1),
-                'z' => z_start(&word_bytes, pos + 1),
-                _ => 0,
-            };
+        let word_left = &word_bytes[pos..];
+        if word_left.len() > 1 {
+            pos += next_char(word_left);
         }
-
         count += 1;
         pos += 1;
     }
@@ -31,46 +23,58 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn c_start(word_bytes: &[u8], pos: usize) -> usize {
-    match word_bytes[pos] as char {
+fn next_char(word: &[u8]) -> usize {
+    match word[0] as char {
+        'c' => c_start(&word),
+        'd' => d_start(&word),
+        'l' => l_start(&word),
+        'n' => n_start(&word),
+        's' => s_start(&word),
+        'z' => z_start(&word),
+        _ => 0,
+    }
+}
+
+fn c_start(word_bytes: &[u8]) -> usize {
+    match word_bytes[1] as char {
         '=' | '-'  => 1,
         _ => 0,
     }
 }
 
-fn d_start(word_bytes: &[u8], pos: usize) -> usize {
-    match word_bytes[pos] as char {
+fn d_start(word_bytes: &[u8]) -> usize {
+    match word_bytes[1] as char {
         '-' => 1,
         'z' => {
-            if word_bytes.len() > pos + 1 && word_bytes[pos + 1] as char == '=' { return 2 } else { 0 }
+            if word_bytes.len() > 2 && word_bytes[2] as char == '=' { return 2 } else { 0 }
         }
         _ => 0,
     }
 }
 
-fn l_start(word_bytes: &[u8], pos: usize) -> usize {
-    match word_bytes[pos] as char {
+fn l_start(word_bytes: &[u8]) -> usize {
+    match word_bytes[1] as char {
         'j' => 1,
         _ => 0,
     }
 }
 
-fn n_start(word_bytes: &[u8], pos: usize) -> usize {
-    match word_bytes[pos] as char {
+fn n_start(word_bytes: &[u8]) -> usize {
+    match word_bytes[1] as char {
         'j' => 1,
         _ => 0,
     }
 }
 
-fn s_start(word_bytes: &[u8], pos: usize) -> usize {
-    match word_bytes[pos] as char {
+fn s_start(word_bytes: &[u8]) -> usize {
+    match word_bytes[1] as char {
         '=' => 1,
         _ => 0,
     }
 }
 
-fn z_start(word_bytes: &[u8], pos: usize) -> usize {
-    match word_bytes[pos] as char {
+fn z_start(word_bytes: &[u8]) -> usize {
+    match word_bytes[1] as char {
         '=' => 1,
         _ => 0,
     }
