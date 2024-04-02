@@ -12,28 +12,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .map(str::parse::<u8>)
             .collect::<Result<Vec<_>, _>>()?;
 
-        paste_color_paper(&mut white_paper, color_paper[0], color_paper[1]);
+        paste_color_paper(&mut white_paper, color_paper[0] as usize, color_paper[1] as usize);
 
     }
 
-    println!("{}", calculate_colored_area(&white_paper));
+    let area: u16 = white_paper.iter().flatten().map(|&v| v as u16).sum();
+    println!("{area}");
     Ok(())
 }
 
-fn paste_color_paper(white_paper: &mut [[u8; 100]; 100], x: u8, y: u8) {
+fn paste_color_paper(white_paper: &mut [[u8; 100]; 100], x: usize, y: usize) {
     for i in x..x+10 {
         for j in y..y+10 {
-            white_paper[j as usize][i as usize] = 1u8;
+            white_paper[j][i] = 1u8;
         }
     }
-}
-
-fn calculate_colored_area(white_paper: &[[u8; 100]; 100]) -> u16 {
-    let mut area = 0u16;
-    for i in 0..100 {
-        for j in 0..100 {
-            area += white_paper[j][i] as u16;
-        }
-    }
-    area as u16
 }
