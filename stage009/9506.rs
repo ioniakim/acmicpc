@@ -14,16 +14,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn solve(n: u32) {
-    let mut factors = vec![];
-    let mut sum = 0;
-    for i in 1..n {
-        if n % i == 0 {
-            factors.push(i);
-            sum += i;
-        }
-    }
+    let factors: Vec<u32> = (1..n).filter(|v| n % v == 0).collect();
 
-    if sum == n {
+    if n == factors.iter().sum() {
         let rh = factors.iter()
             .map(u32::to_string)
             .collect::<Vec<_>>()
