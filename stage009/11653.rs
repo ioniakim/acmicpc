@@ -1,3 +1,4 @@
+// Find efficient method.
 use std::io;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -7,7 +8,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     while n > 1 && !is_prime(n) {
         for i in 2..=n.div_ceil(2) {
-            if !is_prime(i) { continue; }
             if n % i == 0 {
                 println!("{i}");
                 n /= i;
