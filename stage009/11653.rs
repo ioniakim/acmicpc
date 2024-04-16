@@ -1,4 +1,3 @@
-// Find efficient method.
 use std::io;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -6,35 +5,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     io::stdin().read_line(&mut input)?;
     let mut n = input.trim().parse::<usize>()?;
 
-    while n > 1 && !is_prime(n) {
-        for i in 2..=n.div_ceil(2) {
-            if n % i == 0 {
-                println!("{i}");
-                n /= i;
-                break;
-            }
+    let mut i = 2;
+    while i * i <= n {
+        while n % i == 0 {
+            n /= i;
+            println!("{i}");
         }
-    }
 
+        i += 1;
+    }
     if n != 1 {
         println!("{n}");
     }
     Ok(())
-}
-
-fn is_prime(n: usize) -> bool {
-    if n == 0 || n == 1 {
-        return false;
-    }
-
-    if n == 2 || n == 3 {
-        return true;
-    }
-
-    for i in 2..=n.div_ceil(2) {
-        if n % i == 0 {
-            return false;
-        }
-    }
-    true
 }
