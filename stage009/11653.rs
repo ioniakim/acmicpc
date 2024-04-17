@@ -3,19 +3,23 @@ use std::io;
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut input = String::new();
     io::stdin().read_line(&mut input)?;
-    let mut n = input.trim().parse::<usize>()?;
+    let n = input.trim().parse::<usize>()?;
+    factorize_while(n);
+    Ok(())
+}
 
-    let mut i = 2;
-    while i * i <= n {
-        while n % i == 0 {
-            n /= i;
-            println!("{i}");
+fn factorize_while(number: usize) {
+    let mut number = number;
+    let mut divisor = 2;
+    while divisor * divisor <= number {
+        while number % divisor == 0 {
+            number /= divisor;
+            println!("{divisor}");
         }
 
-        i += 1;
+        divisor += 1;
     }
-    if n != 1 {
-        println!("{n}");
+    if number != 1 {
+        println!("{number}");
     }
-    Ok(())
 }
