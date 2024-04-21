@@ -7,21 +7,18 @@ fn main() -> Result<(), Box<dyn Error>> {
     let n: usize = input.trim().parse()?;
 
     let mut result = 0;
-    let mut creator = n - 1;
-    while creator >= 1 {
+    for creator in 1..n {
         let mut sum = creator;
         let mut m = creator;
         while m > 0 {
-            let digit = m % 10;
-            sum += digit;
+            sum += m % 10;
             m = m / 10;
         }
 
         if sum == n {
             result = creator;
+            break;
         }
-
-        creator -= 1;
     }
 
     println!("{result}");
