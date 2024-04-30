@@ -2,13 +2,18 @@ use std::io;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
 
-    let input = io::read_to_string(io::stdin())?;
-    let mut numbers: Vec<u16> = input.split_whitespace()
-        .map(str::parse)
-        .collect::<Result<Vec<_>, _>>()?;
+    let mut input = String::new();
+    io::stdin().read_line(&mut input)?;
+    let n: usize = input.trim().parse()?;
+    let mut numbers = vec![];
+    for data in io::stdin().lines().take(n) {
+        let data = data?;
+        let number: i16 = data.parse()?;
+        numbers.push(number);
+    }
 
     sort_by_insertion(&mut numbers);
-    println!("{:?}", numbers);
+    numbers.iter().for_each(|&v| println!("{v}"));
     Ok(())
 }
 
