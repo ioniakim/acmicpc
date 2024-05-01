@@ -2,14 +2,6 @@ use std::io::Write;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut out = std::io::BufWriter::new(std::io::stdout());
-    // let mut input = String::new();
-    // std::io::stdin().read_line(&mut input)?;
-    // let n = input.trim().parse()?;
-
-    // let mut data = std::io::stdin().lines().take(n)
-    //     .filter_map(Result::ok)
-    //     .map(|line| line.parse::<i32>())
-    //     .collect::<Result<Vec<_>, _>>()?;
 
     let input = std::io::read_to_string(std::io::stdin())?;
     let mut numbers: Vec<i32> = input.trim().split_ascii_whitespace()
@@ -18,13 +10,55 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let data = &mut numbers[1..];
 
-    // quick_sort(&mut data);
-    data.sort();
+    // data.sort();
+    merge_sort(data, 0, data.len());
 
     for e in data {
         writeln!(out, "{}", e)?;
     }
     Ok(())
+}
+
+static mut BUFFER: [i32; 1_000_000] = [0i32; 1_000_000];
+
+fn merge_sort(elements: &mut [i32], start: usize, end: usize) {
+    let len = end - start;
+    if len == 1 {
+        return;
+    }
+
+    let mid = start + len / 2;
+    merge_sort(elements, start, mid);
+    merge_sort(elements, mid, end);
+
+    unsafe {
+        let mut i = start;
+        let mut j = mid;
+        let mut k = start;
+        while i < mid && j < end {
+            if elements[i] <= elements[j] {
+                BUFFER[k] = elements[i];
+                i += 1;
+            } else {
+                BUFFER[k] = elements[j];
+                j += 1;
+            }
+            k += 1;
+        }
+        while i < mid {
+            BUFFER[k] = elements[i];
+            i += 1;
+            k += 1;
+        }
+        while j < end {
+            BUFFER[k] = elements[j];
+            j += 1;
+            k += 1;
+        }
+        for i in start..end {
+            elements[i] = BUFFER[i];
+        }
+    }
 }
 
 #[allow(dead_code)]
