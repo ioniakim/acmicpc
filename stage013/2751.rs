@@ -11,7 +11,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let data = &mut numbers[1..];
 
     // data.sort();
-    merge_sort(data, 0, data.len());
+    merge_sort(data);
 
     for e in data {
         writeln!(out, "{}", e)?;
@@ -21,20 +21,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 static mut BUFFER: [i32; 1_000_000] = [0i32; 1_000_000];
 
-fn merge_sort(elements: &mut [i32], start: usize, end: usize) {
-    let len = end - start;
-    if len == 1 {
+fn merge_sort(elements: &mut [i32]) {
+    if elements.len() == 1 {
         return;
     }
-
-    let mid = start + len / 2;
-    merge_sort(elements, start, mid);
-    merge_sort(elements, mid, end);
+    let end = elements.len();
+    let mid = elements.len() / 2;
+    merge_sort(&mut elements[0..mid]);
+    merge_sort(&mut elements[mid..end]);
 
     unsafe {
-        let mut i = start;
+        let mut i = 0;
         let mut j = mid;
-        let mut k = start;
+        let mut k = 0;
         while i < mid && j < end {
             if elements[i] <= elements[j] {
                 BUFFER[k] = elements[i];
@@ -50,7 +49,7 @@ fn merge_sort(elements: &mut [i32], start: usize, end: usize) {
         } else if j < end {
             BUFFER[k..k + end - j].copy_from_slice(&elements[j..end]);
         }
-        elements[start..end].copy_from_slice(&BUFFER[start..end]);
+        elements[..end].copy_from_slice(&BUFFER[..end]);
     }
 }
 
