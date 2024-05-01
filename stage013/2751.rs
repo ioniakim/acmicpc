@@ -45,19 +45,12 @@ fn merge_sort(elements: &mut [i32], start: usize, end: usize) {
             }
             k += 1;
         }
-        while i < mid {
-            BUFFER[k] = elements[i];
-            i += 1;
-            k += 1;
+        if i < mid {
+            BUFFER[k..k + mid - i].copy_from_slice(&elements[i..mid]);
+        } else if j < end {
+            BUFFER[k..k + end - j].copy_from_slice(&elements[j..end]);
         }
-        while j < end {
-            BUFFER[k] = elements[j];
-            j += 1;
-            k += 1;
-        }
-        for i in start..end {
-            elements[i] = BUFFER[i];
-        }
+        elements[start..end].copy_from_slice(&BUFFER[start..end]);
     }
 }
 
