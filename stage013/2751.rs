@@ -10,8 +10,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let data = &mut numbers[1..];
 
-    // data.sort();
     merge_sort(data);
+    // quick_sort(data);
 
     for e in data {
         writeln!(out, "{}", e)?;
@@ -21,6 +21,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 static mut BUFFER: [i32; 1_000_000] = [0i32; 1_000_000];
 
+#[allow(dead_code)]
 fn merge_sort(elements: &mut [i32]) {
     if elements.len() < 10 {
         insertion_sort(elements);
@@ -55,7 +56,7 @@ fn merge_sort(elements: &mut [i32]) {
 }
 
 fn insertion_sort<T>(elements: &mut [T])
-where T: std::cmp::PartialOrd + Copy {
+where T: std::cmp::PartialOrd {
     for mut i in 1..elements.len() {
         while i > 0 && elements[i - 1] > elements[i] {
             elements.swap(i - 1, i);
@@ -67,11 +68,12 @@ where T: std::cmp::PartialOrd + Copy {
 #[allow(dead_code)]
 fn quick_sort<T>(elements: &mut [T])
 where T: std::cmp::PartialOrd {
-    let start = 0;
-    let end = elements.len();
-    if start == end {
+    if elements.len() < 10 {
+        insertion_sort(elements);
         return;
     }
+    let start = 0;
+    let end = elements.len();
 
     let p = partition(elements, start, end);
 
