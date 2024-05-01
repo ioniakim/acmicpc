@@ -22,7 +22,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 static mut BUFFER: [i32; 1_000_000] = [0i32; 1_000_000];
 
 fn merge_sort(elements: &mut [i32]) {
-    if elements.len() == 1 {
+    if elements.len() < 10 {
+        insertion_sort(elements);
         return;
     }
     let end = elements.len();
@@ -50,6 +51,16 @@ fn merge_sort(elements: &mut [i32]) {
             BUFFER[k..k + end - j].copy_from_slice(&elements[j..end]);
         }
         elements[..end].copy_from_slice(&BUFFER[..end]);
+    }
+}
+
+fn insertion_sort<T>(elements: &mut [T])
+where T: std::cmp::PartialOrd + Copy {
+    for mut i in 1..elements.len() {
+        while i > 0 && elements[i - 1] > elements[i] {
+            elements.swap(i - 1, i);
+            i -= 1;
+        }
     }
 }
 
