@@ -1,3 +1,8 @@
+/// [x] quick_sort
+/// [x] merge_sort
+/// [x] insertion_sort
+/// [ ] quick_sort with shuffle -> A random number generator is required.
+/// [ ] heap_sort
 use std::io::Write;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -10,8 +15,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let data = &mut numbers[1..];
 
-    merge_sort(data);
-    // quick_sort(data);
+    // merge_sort(data);
+    quick_sort(data);
 
     for e in data {
         writeln!(out, "{}", e)?;
@@ -72,10 +77,13 @@ where T: std::cmp::PartialOrd {
         insertion_sort(elements);
         return;
     }
+    if elements.len() < 2 {
+        return;
+    }
     let start = 0;
     let end = elements.len();
 
-    let p = partition(elements, start, end);
+    let p = partition2(elements, start, end);
 
     quick_sort(&mut elements[start..p]);
     quick_sort(&mut elements[p + 1..end]);
@@ -96,4 +104,32 @@ where T: std::cmp::PartialOrd {
 
     elements.swap(i, pivot);
     i
+}
+
+
+/// Robert Sedgwick's partition algorithm.
+#[allow(dead_code)]
+fn partition2<T>(elements: &mut [T], start: usize, end: usize) -> usize
+where T: std::cmp::PartialOrd {
+    let last = end - 1;
+    let pivot = start;
+    let mut i = start + 1;
+    let mut j = last;
+
+    loop { // The length of elements must be greater than 1. The quick_sort function guards it.
+        while elements[i] < elements[pivot] {
+            if i == last { break; }
+            i += 1;
+        }
+        while elements[j] > elements[pivot] {
+            // if j == start { break; } // This bound check is useless since i can't go less than start because pivot is start.
+            j -= 1;
+        }
+        if i >= j { break; }
+        elements.swap(i, j);
+    }
+
+    elements.swap(j, pivot);
+
+    j
 }
