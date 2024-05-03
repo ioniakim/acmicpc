@@ -2,7 +2,7 @@ use std::io;
 use io::Write;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut out = io::BufWriter::new(io::stdout());
+    let mut out = io::BufWriter::with_capacity(1024 * 1024, io::stdout());
     let mut count = [0usize; 10_001];
 
     let mut input = String::new();
