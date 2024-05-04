@@ -12,7 +12,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         points.push((iter.next().unwrap().parse()?, iter.next().unwrap().parse()?));
     }
 
-    merge_sort_by(&mut points, two_tuple_less);
+    qsort_by(&mut points, two_tuple_less);
+    // merge_sort_by(&mut points, two_tuple_less);
 
     let mut out = std::io::BufWriter::new(std::io::stdout());
     for (x, y) in points {
@@ -67,6 +68,32 @@ fn merge_sort_by(elements: &mut[(i32, i32)], less: fn(&(i32, i32), &(i32, i32)) 
 
         elements[0..].copy_from_slice(&BUFF[0..end]);
     }
+}
+
+#[allow(dead_code)]
+fn gen_rand(seed: usize) -> Box<dyn FnMut() -> usize> {
+    const MULTIPLY: usize = 1664525;
+    const INCREMENT: usize = 1013904223;
+    let mut rand = seed;
+
+    Box::new(move || { rand = rand.wrapping_mul(MULTIPLY).wrapping_add(INCREMENT); rand })
+}
+
+#[allow(dead_code)]
+fn shuffle<T>(elements: &mut[T], seed: usize) {
+    let end = elements.len();
+    let mut rand = gen_rand(seed);
+    for i in 1..end {
+        let p = rand() % (i + 1);
+        elements.swap(p, i);
+    }
+}
+
+#[allow(dead_code)]
+fn qsort_by<T>(elements: &mut[T], less: fn(&T, &T) -> bool) {
+    shuffle(elements, 1);
+
+    quick_sort_by(elements, less);
 }
 
 #[allow(dead_code)]
