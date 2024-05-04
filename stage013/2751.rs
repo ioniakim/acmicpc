@@ -77,9 +77,6 @@ where T: std::cmp::PartialOrd {
         insertion_sort(elements);
         return;
     }
-    if elements.len() < 2 {
-        return;
-    }
     let start = 0;
     let end = elements.len();
 
