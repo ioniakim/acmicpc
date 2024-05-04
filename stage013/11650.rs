@@ -12,7 +12,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         points.push((iter.next().unwrap().parse()?, iter.next().unwrap().parse()?));
     }
 
-    quick_sort_by(&mut points, two_tuple_less);
+    merge_sort_by(&mut points, two_tuple_less);
 
     let mut out = std::io::BufWriter::new(std::io::stdout());
     for (x, y) in points {
@@ -27,6 +27,45 @@ where T: std::cmp::PartialOrd {
         true
     } else {
         false
+    }
+}
+
+static mut BUFF: [(i32, i32); 100_001] = [(0, 0); 100_001];
+
+#[allow(dead_code)]
+fn merge_sort_by(elements: &mut[(i32, i32)], less: fn(&(i32, i32), &(i32, i32)) -> bool){
+    let end = elements.len();
+    if end < 10 {
+        insertion_sort_by(elements, less);
+        return;
+    }
+
+    let mid = end / 2;
+    merge_sort_by(&mut elements[0..mid], less);
+    merge_sort_by(&mut elements[mid..], less);
+
+    let mut i = 0;
+    let mut j = mid;
+    let mut k = 0;
+    unsafe {
+        while i < mid && j < elements.len() {
+            if less(&elements[i], &elements[j]) {
+                BUFF[k] = elements[i];
+                i += 1;
+            } else {
+                BUFF[k] = elements[j];
+                j += 1;
+            }
+            k += 1;
+        }
+
+        if i < mid {
+            BUFF[k..k + mid - i].copy_from_slice(&elements[i..mid]);
+        } else if j < end {
+            BUFF[k..k + end - j].copy_from_slice(&elements[j..]);
+        }
+
+        elements[0..].copy_from_slice(&BUFF[0..end]);
     }
 }
 
