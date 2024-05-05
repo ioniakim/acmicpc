@@ -12,6 +12,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .flat_map(|s| s)
         .collect();
 
+    // shuffle_qsort_by(&mut strings, length_lexical_order);
     strings.sort_by(length_lexical_order);
 
     strings.dedup();
@@ -70,10 +71,8 @@ fn shuffle<T>(elements: &mut [T]) {
     let end = elements.len();
     let mut rand = gen_rand(1024);
     for i in 1..end {
-        for j in (1..i).rev() {
-            let p = rand() % (j + 1);
-            elements.swap(j, p);
-        }
+        let p = rand() % (i + 1);
+        elements.swap(i, p);
     }
 }
 
