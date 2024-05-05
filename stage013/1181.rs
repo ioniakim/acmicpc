@@ -12,7 +12,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .flat_map(|s| s)
         .collect();
 
-    shuffle_qsort_by(&mut strings, length_lexical_order);
+    strings.sort_by(length_lexical_order);
 
     strings.dedup();
 
@@ -22,7 +22,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     Ok(())
 }
-
 
 /// Have to find to use &str instead of &&str
 fn length_lexical_order(s1: &String, s2: &String) -> std::cmp::Ordering {
@@ -47,6 +46,7 @@ fn length_lexical_order(s1: &String, s2: &String) -> std::cmp::Ordering {
     Ordering::Equal
 }
 
+#[allow(dead_code)]
 fn shuffle_qsort_by<T, F>(elements: &mut [T], cmp: F)
 where F: Fn(&T, &T) -> std::cmp::Ordering {
     shuffle(elements);
@@ -54,6 +54,7 @@ where F: Fn(&T, &T) -> std::cmp::Ordering {
     qsort_by(elements, &cmp);
 }
 
+#[allow(dead_code)]
 fn gen_rand(seed: usize) -> impl FnMut() -> usize {
     const MULTIPLY: usize = 1664525;
     const INCREMENT: usize = 1013904223;
@@ -64,7 +65,7 @@ fn gen_rand(seed: usize) -> impl FnMut() -> usize {
     }
 }
 
-
+#[allow(dead_code)]
 fn shuffle<T>(elements: &mut [T]) {
     let end = elements.len();
     let mut rand = gen_rand(1024);
@@ -76,6 +77,7 @@ fn shuffle<T>(elements: &mut [T]) {
     }
 }
 
+#[allow(dead_code)]
 fn qsort_by<T, F>(elements: &mut [T], cmp: &F)
 where F: Fn(&T, &T) -> std::cmp::Ordering {
     if elements.len() < 10 {
@@ -89,6 +91,7 @@ where F: Fn(&T, &T) -> std::cmp::Ordering {
     qsort_by(&mut elements[p+1..], cmp);
 }
 
+#[allow(dead_code)]
 fn partition_by<T, F>(elements: &mut [T], cmp: F) -> usize
 where F: Fn(&T, &T) -> std::cmp::Ordering {
     let pivot = 0;
@@ -111,6 +114,7 @@ where F: Fn(&T, &T) -> std::cmp::Ordering {
     j
 }
 
+#[allow(dead_code)]
 fn insertion_sort_by<T, F>(elements: &mut [T], cmp: F)
 where F: Fn(&T, &T) -> std::cmp::Ordering {
     let end = elements.len();
