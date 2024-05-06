@@ -50,10 +50,11 @@ fn point_y_less(p1: &(i32, i32), p2: &(i32, i32)) -> bool {
 fn shuffle_qsort_by<T>(elements: &mut [T], less: fn(&T, &T) -> bool) {
     shuffle(elements, 1024);
 
-    qsort_by(elements, less);
+    qsort_by(elements, &less);
 }
 
-fn qsort_by<T>(elements: &mut [T], less: fn(&T, &T) -> bool) {
+fn qsort_by<T, F>(elements: &mut [T], less: &F)
+where F: Fn(&T, &T) -> bool {
     if elements.len() < 10 {
         insertion_sort(elements, less);
         return;
@@ -65,7 +66,8 @@ fn qsort_by<T>(elements: &mut [T], less: fn(&T, &T) -> bool) {
     qsort_by(&mut elements[p+1..], less);
 }
 
-fn partition_by<T>(elements: &mut [T], less: fn(&T, &T) -> bool) -> usize {
+fn partition_by<T, F>(elements: &mut [T], less: F) -> usize
+where F: Fn(&T, &T) -> bool {
     let end = elements.len();
     let pivot = 0;
     let mut i = 1;
@@ -90,7 +92,8 @@ fn partition_by<T>(elements: &mut [T], less: fn(&T, &T) -> bool) -> usize {
 }
 
 
-fn insertion_sort<T>(elements: &mut [T], less: fn(&T, &T)->bool) {
+fn insertion_sort<T, F>(elements: &mut [T], less: F)
+where F: Fn(&T, &T) -> bool {
     let end = elements.len();
     for i in 1..end {
         for j in (1..=i).rev() {
