@@ -90,14 +90,16 @@ fn shuffle<T>(elements: &mut[T], seed: usize) {
 }
 
 #[allow(dead_code)]
-fn qsort_by<T>(elements: &mut[T], less: fn(&T, &T) -> bool) {
+fn qsort_by<T, F>(elements: &mut[T], less: F)
+where F: Fn(&T, &T) -> bool {
     shuffle(elements, 1);
 
-    quick_sort_by(elements, less);
+    quick_sort_by(elements, &less);
 }
 
 #[allow(dead_code)]
-fn quick_sort_by<T>(elements: &mut [T], less: fn(&T, &T) -> bool) {
+fn quick_sort_by<T, F>(elements: &mut [T], less: &F)
+where F: Fn(&T, &T) -> bool {
     if elements.len() < 10 {
         insertion_sort_by(elements, less);
         return;
@@ -110,7 +112,8 @@ fn quick_sort_by<T>(elements: &mut [T], less: fn(&T, &T) -> bool) {
 }
 
 #[allow(dead_code)]
-fn partition<T>(elements: &mut [T], less: fn(&T, &T) -> bool) -> usize{
+fn partition<T, F>(elements: &mut [T], less: F) -> usize
+where F: Fn(&T, &T) -> bool {
     let lo = 0;
     let hi = elements.len() - 1;
     let pivot = lo;
@@ -132,7 +135,8 @@ fn partition<T>(elements: &mut [T], less: fn(&T, &T) -> bool) -> usize{
     j
 }
 
-fn insertion_sort_by<T>(elements: &mut [T], less: fn(&T, &T) -> bool) {
+fn insertion_sort_by<T, F>(elements: &mut [T], less: F)
+where F: Fn(&T, &T) -> bool {
     for i in 1..elements.len() {
         for j in (1..=i).rev() {
             if less(&elements[j], &elements[j-1]) {
