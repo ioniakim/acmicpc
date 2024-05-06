@@ -71,12 +71,12 @@ fn merge_sort_by(elements: &mut[(i32, i32)], less: fn(&(i32, i32), &(i32, i32)) 
 }
 
 #[allow(dead_code)]
-fn gen_rand(seed: usize) -> Box<dyn FnMut() -> usize> {
+fn gen_rand(seed: usize) -> impl FnMut() -> usize {
     const MULTIPLY: usize = 1664525;
     const INCREMENT: usize = 1013904223;
     let mut rand = seed;
 
-    Box::new(move || { rand = rand.wrapping_mul(MULTIPLY).wrapping_add(INCREMENT); rand })
+    move || { rand = rand.wrapping_mul(MULTIPLY).wrapping_add(INCREMENT); rand }
 }
 
 #[allow(dead_code)]
