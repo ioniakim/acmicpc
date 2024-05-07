@@ -35,14 +35,14 @@ where T: std::cmp::PartialOrd {
     }
     let mid = elements.len() / 2;
 
-    if elements[mid] < *e {
-        match binary_search(&elements[mid + 1..], e) {
-            Some(i) => Some(mid + 1 + i),
-            _ => None,
-        }
-    } else if elements[mid] > *e {
-        binary_search(&elements[..mid], e)
-    } else {
-        Some(mid)
+    match &elements[mid] {
+        v if v > e => binary_search(&elements[..mid], e),
+        v if v < e => {
+            match binary_search(&elements[mid + 1..], e) {
+                Some(i) => Some(i + mid + 1),
+                _ => None,
+            }
+        },
+        _ => Some(mid),
     }
 }
