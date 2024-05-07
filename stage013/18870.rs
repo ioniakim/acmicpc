@@ -18,10 +18,31 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut out = std::io::BufWriter::new(std::io::stdout());
     for e in origin {
-        if let Ok(i) = ordered.binary_search(&e) {
+        if let Some(i) = binary_search(&ordered, &e) {
             write!(out, "{} ", i)?
         }
     }
     writeln!(out)?;
     Ok(())
+}
+
+
+#[allow(dead_code)]
+fn binary_search<T>(elements: &[T], e: &T) -> Option<usize>
+where T: std::cmp::PartialOrd {
+    if elements.is_empty() {
+        return None;
+    }
+    let mid = elements.len() / 2;
+
+    if elements[mid] < *e {
+        match binary_search(&elements[mid + 1..], e) {
+            Some(i) => Some(mid + 1 + i),
+            _ => None,
+        }
+    } else if elements[mid] > *e {
+        binary_search(&elements[..mid], e)
+    } else {
+        Some(mid)
+    }
 }
