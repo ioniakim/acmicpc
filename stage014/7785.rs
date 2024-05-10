@@ -1,25 +1,25 @@
 use std::collections::BTreeSet;
-use std::io::{stdin, stdout, Write, BufWriter};
+use std::io::{stdin, read_to_string};
 
 fn main() -> Result<(), Box<dyn std::error::Error>>{
-    let mut input = String::new();
-    stdin().read_line(&mut input)?;
-    let n = input.trim().parse::<usize>()?;
-    let mut entry_register = BTreeSet::new();
+    let input = read_to_string(stdin())?;
 
-    for line in stdin().lines().take(n) {
-        let line = line?;
-        let mut record = line.split_whitespace();
-        let name = record.next().ok_or::<String>("No Name".into())?;
-        let status = record.next().ok_or::<String>("No Status".into())?;
+    let mut iter = input.split_whitespace();
+    let mut next = || iter.next().ok_or::<String>("No More".into());
+
+    let n: usize = next()?.parse()?;
+    let mut entry_register = BTreeSet::new();
+    for _ in 0..n {
+        let name = next()?;
+        let status = next()?;
         match status {
             "enter" => entry_register.insert(name.to_owned()),
             _ => entry_register.remove(name),
         };
     }
-    let mut out = BufWriter::new(stdout());
-    for name in entry_register.iter().rev() {
-        writeln!(out, "{name}")?;
-    }
+
+    let result = entry_register.into_iter().rev().collect::<Vec<_>>().join("\n");
+    println!("{result}");
+
     Ok(())
 }
