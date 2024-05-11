@@ -9,8 +9,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let n = next()?.parse::<usize>()?;
     let m = next()?.parse::<usize>()?;
 
-    let not_heard = (0..n).map(|_| next()).flatten().collect::<BTreeSet<&str>>();
-    let not_seen = (0..m).map(|_| next()).flatten().collect::<BTreeSet<&str>>();
+    let not_heard = (0..n).map(|_| next()).collect::<Result<BTreeSet<_>, _>>()?;
+    let not_seen = (0..m).map(|_| next()).collect::<Result<BTreeSet<_>, _>>()?;
 
     let both = not_heard.intersection(&not_seen).map(|s| *s).collect::<Vec<_>>();
 
