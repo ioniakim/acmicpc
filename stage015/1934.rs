@@ -1,7 +1,8 @@
-use std::io::{stdin, BufReader, BufRead};
+use std::io::{stdin, BufReader, BufRead, stdout, BufWriter, Write};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut reader = BufReader::new(stdin());
+    let mut out = BufWriter::new(stdout());
 
     let mut input = String::new();
     reader.read_line(&mut input)?;
@@ -11,12 +12,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let line = line?;
         let mut iter = line.split_whitespace()
             .flat_map(str::parse::<usize>);
-        let num1 = iter.next().ok_or("".to_owned())?;
-        let num2 = iter.next().ok_or("".to_owned())?;
+        let num1 = iter.next().ok_or("No Input".to_owned())?;
+        let num2 = iter.next().ok_or("No Input".to_owned())?;
 
         let lcm = solve(num1, num2);
 
-        println!("{lcm}");
+        writeln!(out, "{lcm}")?;
     }
 
     Ok(())
