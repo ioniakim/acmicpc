@@ -21,40 +21,36 @@ fn gcd(num1: usize, num2: usize) -> usize {
     if num1 < num2 {
         return gcd(num2, num1);
     }
-    match num1 % num2 {
-        0 => num2,
-        remainder => gcd(num2, remainder),
+    let mut num1 = num1;
+    let mut num2 = num2;
+    loop {
+        match num1 % num2 {
+            0 => break num2,
+            remainder => {
+                num1 = num2;
+                num2 = remainder;
+            },
+        }
     }
 }
 
 fn solve(tree_set: &BTreeSet<usize>) -> Result<usize, Box<dyn std::error::Error>> {
-    let mut tree_iter = tree_set.iter();
-    let mut first = *(tree_iter.next().ok_or("".to_owned())?);
-    let mut gaps: HashSet<usize> = tree_iter
-        .map(|&p| {
-            let gap = p - first;
-            first = p;
-            gap
-        })
-        .collect();
+    let mut iter = tree_set.iter();
+    let mut prev = iter.next().ok_or("No Value".to_owned())?;
 
-    while gaps.len() > 1 {
-        let mut iter = gaps.into_iter();
-        first = iter.next().ok_or("Invalid Value".to_owned())?;
-        gaps = iter.map(|g| {
-            let gcd = gcd(first, g);
-            first = g;
-            gcd
-        })
-        .collect();
-    }
+    let gaps: HashSet<usize> = iter.map(|t| {
+        let gap = t - prev;
+        prev = t;
+        gap
+    }).collect();
 
-    let common_gap = *(gaps.iter().next().ok_or("Failed".to_owned())?);
+    let mut iter = gaps.iter();
+    let mut common_gcd = *(iter.next().ok_or("No Gap".to_owned())?);
+    common_gcd = iter.fold(common_gcd, |prev_gcd, &g| gcd(prev_gcd, g));
 
-    let last = *(tree_set.last().ok_or("No Value".to_owned())?);
-    let first = *(tree_set.first().ok_or("No Value".to_owned())?);
-    let count = (first..last).step_by(common_gap)
-        .filter(|t| !tree_set.contains(t))
-        .count();
+    let first = *(tree_set.first().ok_or("No First".to_owned())?);
+    let last = *(tree_set.last().ok_or("No Last".to_owned())?);
+    let count = (last - first) / common_gcd  - tree_set.len() + 1;
+
     Ok(count)
 }
