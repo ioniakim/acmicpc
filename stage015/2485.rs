@@ -17,13 +17,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn gcf(num1: usize, num2: usize) -> usize {
+fn gcd(num1: usize, num2: usize) -> usize {
     if num1 < num2 {
-        return gcf(num2, num1);
+        return gcd(num2, num1);
     }
     match num1 % num2 {
         0 => num2,
-        remainder => gcf(num2, remainder),
+        remainder => gcd(num2, remainder),
     }
 }
 
@@ -42,9 +42,9 @@ fn solve(tree_set: &BTreeSet<usize>) -> Result<usize, Box<dyn std::error::Error>
         let mut iter = gaps.into_iter();
         first = iter.next().ok_or("Invalid Value".to_owned())?;
         gaps = iter.map(|g| {
-            let gcf = gcf(first, g);
+            let gcd = gcd(first, g);
             first = g;
-            gcf
+            gcd
         })
         .collect();
     }
