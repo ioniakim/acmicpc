@@ -1,6 +1,7 @@
 use std::io::prelude::*;
 use std::io::{stdin, stdout, BufWriter};
 
+
 fn main() {
     let stdin = stdin().lock();
     let mut out = BufWriter::new(stdout());
@@ -19,14 +20,12 @@ fn solve(num: usize) -> usize {
     is_primes[0] = false;
     is_primes[1] = false;
 
-    for i in 2..=upper {
+    for i in (2..).take_while(|i| i * i <= upper) {
         if !is_primes[i] {
             continue;
         }
-        for j in (i..=upper).step_by(i) {
-            if j != i {
-                is_primes[j] = false;
-            }
+        for j in (i * i..=upper).step_by(i) {
+            is_primes[j] = false;
         }
     }
 
