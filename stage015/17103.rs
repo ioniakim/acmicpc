@@ -1,4 +1,6 @@
 use std::ops::Range;
+use std::ops::RangeFrom;
+use std::ops::RangeTo;
 
 struct Eratosthenes {
     sieve: Vec<bool>
@@ -33,6 +35,15 @@ impl Eratosthenes {
         EratosthenesIter::new(&self.sieve[..], range)
     }
 
+    fn range_from(&self, range: RangeFrom<usize>) -> EratosthenesIter {
+        let range = Range{start: range.start, end: self.sieve.len()};
+        EratosthenesIter::new(&self.sieve[..], range)
+    }
+
+    fn range_to(&self, range: RangeTo<usize>) -> EratosthenesIter {
+        let range = Range{start: 2, end: range.end};
+        EratosthenesIter::new(&self.sieve[..], range)
+    }
 }
 
 
@@ -87,20 +98,17 @@ impl<'a> DoubleEndedIterator for EratosthenesIter<'a> {
  * count when the sum of each pair is the same as the given number.
  */
 fn main() {
-    let eratos = Eratosthenes::with_size(12);
 
-    for p in eratos.range(3..7).rev() {
-        println!("{p}");
+    let n = 100;
+    let eratos = Eratosthenes::with_size(n);
+    let mut count = 0;
+    for p1 in eratos.range_to(..n/2) {
+        for p2 in eratos.range_from(n/2..).rev() {
+            if p1 + p2 == n {
+                count += 1;
+                println!("{p1} + {p2} = {}", p1 + p2);
+            }
+        }
     }
-    // let n = 100;
-    // let mut count = 0;
-    // for p1 in eratos.iter().take_while(|&p| p <= n / 2) {
-    //     for p2 in eratos.iter().rev().take_while(|&p| p >= n / 2) {
-    //         if p1 + p2 == n {
-    //             count += 1;
-    //             println!("{p1} + {p2} = {}", p1 + p2);
-    //         }
-    //     }
-    // }
-    // println!("{count}");
+    println!("{count}");
 }
