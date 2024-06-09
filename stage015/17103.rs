@@ -1,3 +1,5 @@
+use std::ops::Range;
+
 struct Eratosthenes {
     sieve: Vec<bool>
 }
@@ -24,11 +26,11 @@ impl Eratosthenes {
     }
 
     fn iter(&self) -> EratosthenesIter {
-        EratosthenesIter::new(2, self.sieve.len(), &self.sieve[..])
+        EratosthenesIter::new(&self.sieve[..], 2..self.sieve.len())
     }
 
-    fn range(&self, front: usize, end: usize) -> EratosthenesIter {
-        EratosthenesIter::new(front, end, &self.sieve[..])
+    fn range(&self, range: Range<usize>) -> EratosthenesIter {
+        EratosthenesIter::new(&self.sieve[..], range)
     }
 
 }
@@ -44,14 +46,13 @@ impl<'a> IntoIterator for &'a Eratosthenes {
 }
 
 struct EratosthenesIter<'a> {
-    front: usize,
-    back: usize,
-    sieve: &'a [bool]
+    sieve: &'a [bool],
+    range: Range<usize>,
 }
 
 impl<'a> EratosthenesIter<'a> {
-    fn new(front: usize, back: usize, sieve: &'a [bool] ) -> Self {
-        EratosthenesIter {front: front, back: back, sieve: sieve}
+    fn new(sieve: &'a [bool], range: Range<usize>) -> Self {
+        EratosthenesIter {sieve: sieve, range: range}
     }
 }
 
@@ -59,36 +60,24 @@ impl<'a> Iterator for EratosthenesIter<'a> {
     type Item = usize;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let mut next = self.front;
-        while next < self.back && !self.sieve[next] {
-            next += 1;
+        while let Some(next) = self.range.next() {
+            if self.sieve[next] {
+                return Some(next)
+            }
         }
-        if next < self.back {
-            self.front = next + 1;
-            Some(next)
-        } else {
-            None
-        }
+        None
     }
 }
 
 impl<'a> DoubleEndedIterator for EratosthenesIter<'a> {
 
     fn next_back(&mut self) -> Option<Self::Item> {
-        if self.back < 2 {
-            return None;
+        while let Some(next_back) = self.range.next() {
+            if self.sieve[next_back] {
+                return Some(next_back);
+            }
         }
-        let mut next_back = self.back - 1;
-        while next_back >= self.front && !self.sieve[next_back] {
-            next_back -= 1;
-        }
-
-        if next_back >= self.front {
-            self.back = next_back;
-            Some(next_back)
-        } else {
-            None
-        }
+        None
     }
 }
 
@@ -100,7 +89,7 @@ impl<'a> DoubleEndedIterator for EratosthenesIter<'a> {
 fn main() {
     let eratos = Eratosthenes::with_size(12);
 
-    for p in eratos.range(3, 7).rev() {
+    for p in eratos.range(3..7).rev() {
         println!("{p}");
     }
     // let n = 100;
