@@ -1,6 +1,6 @@
+use std::io::{stdin, read_to_string, stdout, BufWriter};
+use std::io::prelude::*;
 use std::ops::Range;
-use std::ops::RangeFrom;
-use std::ops::RangeTo;
 
 struct Eratosthenes {
     sieve: Vec<bool>
@@ -31,17 +31,18 @@ impl Eratosthenes {
         EratosthenesIter::new(&self.sieve[..], 2..self.sieve.len())
     }
 
+    #[allow(dead_code)]
     fn range(&self, range: Range<usize>) -> EratosthenesIter {
         EratosthenesIter::new(&self.sieve[..], range)
     }
 
-    fn range_from(&self, range: RangeFrom<usize>) -> EratosthenesIter {
-        let range = Range{start: range.start, end: self.sieve.len()};
+    fn range_from(&self, from: usize) -> EratosthenesIter {
+        let range = Range{start: from, end: self.sieve.len()};
         EratosthenesIter::new(&self.sieve[..], range)
     }
 
-    fn range_to(&self, range: RangeTo<usize>) -> EratosthenesIter {
-        let range = Range{start: 2, end: range.end};
+    fn range_to(&self, to: usize) -> EratosthenesIter {
+        let range = Range{start: 2, end: to};
         EratosthenesIter::new(&self.sieve[..], range)
     }
 }
@@ -92,23 +93,45 @@ impl<'a> DoubleEndedIterator for EratosthenesIter<'a> {
     }
 }
 
+struct GoldbachPartition {
+    sieve: Eratosthenes,
+}
+
+impl GoldbachPartition {
+    fn with_size(size: usize) -> Self {
+        GoldbachPartition { sieve: Eratosthenes::with_size(size) }
+    }
+
+    fn solve(&self, num: usize) -> usize {
+        let mut count = 0;
+        for p1 in self.sieve.range_to(num/2 + 1) {
+            for p2 in self.sieve.range_from(num/2).rev() {
+                if p1 + p2 == num {
+                    count += 1;
+                }
+            }
+        }
+        count
+    }
+}
+
 /**
  * 1. Find all primes under a given number
  * 2. For each pair of two prime numbers including the same prime number,
  * count when the sum of each pair is the same as the given number.
  */
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let stdin = stdin().lock();
 
-    let n = 100;
-    let eratos = Eratosthenes::with_size(n);
-    let mut count = 0;
-    for p1 in eratos.range_to(..n/2) {
-        for p2 in eratos.range_from(n/2..).rev() {
-            if p1 + p2 == n {
-                count += 1;
-                println!("{p1} + {p2} = {}", p1 + p2);
-            }
-        }
+    let input_nums = read_to_string(stdin)?.split_whitespace()
+        .skip(1)
+        .map(|s| s.parse::<usize>())
+        .collect::<Result<Vec<usize>, _>>()?;
+
+    let goldbach = GoldbachPartition::with_size(*input_nums.iter().max().ok_or("No Max Value")?);
+    let mut out = BufWriter::new(stdout());
+    for num in input_nums {
+        writeln!(out, "{}", goldbach.solve(num))?;
     }
-    println!("{count}");
+    Ok(())
 }
