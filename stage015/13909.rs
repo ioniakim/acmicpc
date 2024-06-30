@@ -13,11 +13,9 @@ fn solve(n: usize) -> usize {
     let mut windows = vec![true; n + 1];
 
     for i in 2..n+1 {
-        for (j, w) in windows.iter_mut().enumerate() {
-            if j % i == 0 {
-                *w = !*w;
-            }
-        }
+        windows.iter_mut().enumerate()
+            .filter(|(j, _)| j % i == 0)
+            .for_each(|(_, w)| *w = !*w)
     }
 
     windows[1..].iter()
