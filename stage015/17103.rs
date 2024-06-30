@@ -1,6 +1,5 @@
 use std::io::{stdin, read_to_string, stdout, BufWriter};
 use std::io::prelude::*;
-use std::ops::Range;
 
 struct Eratosthenes {
     sieve: Vec<bool>
@@ -26,94 +25,8 @@ impl Eratosthenes {
             }
         }
     }
-
-    fn iter(&self) -> EratosthenesIter {
-        EratosthenesIter::new(&self.sieve[..], 2..self.sieve.len())
-    }
-
-    #[allow(dead_code)]
-    fn range(&self, range: Range<usize>) -> EratosthenesIter {
-        EratosthenesIter::new(&self.sieve[..], range)
-    }
-
-    fn range_from(&self, from: usize) -> EratosthenesIter {
-        let range = Range{start: from, end: self.sieve.len()};
-        EratosthenesIter::new(&self.sieve[..], range)
-    }
-
-    fn range_to(&self, to: usize) -> EratosthenesIter {
-        let range = Range{start: 2, end: to};
-        EratosthenesIter::new(&self.sieve[..], range)
-    }
 }
 
-
-impl<'a> IntoIterator for &'a Eratosthenes {
-    type Item = usize;
-    type IntoIter = EratosthenesIter<'a>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.iter()
-    }
-}
-
-struct EratosthenesIter<'a> {
-    sieve: &'a [bool],
-    range: Range<usize>,
-}
-
-impl<'a> EratosthenesIter<'a> {
-    fn new(sieve: &'a [bool], range: Range<usize>) -> Self {
-        EratosthenesIter {sieve: sieve, range: range}
-    }
-}
-
-impl<'a> Iterator for EratosthenesIter<'a> {
-    type Item = usize;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        while let Some(next) = self.range.next() {
-            if self.sieve[next] {
-                return Some(next)
-            }
-        }
-        None
-    }
-}
-
-impl<'a> DoubleEndedIterator for EratosthenesIter<'a> {
-
-    fn next_back(&mut self) -> Option<Self::Item> {
-        while let Some(next_back) = self.range.next() {
-            if self.sieve[next_back] {
-                return Some(next_back);
-            }
-        }
-        None
-    }
-}
-
-struct GoldbachPartition {
-    sieve: Eratosthenes,
-}
-
-impl GoldbachPartition {
-    fn with_size(size: usize) -> Self {
-        GoldbachPartition { sieve: Eratosthenes::with_size(size) }
-    }
-
-    fn solve(&self, num: usize) -> usize {
-        let mut count = 0;
-        for p1 in self.sieve.range_to(num/2 + 1) {
-            for p2 in self.sieve.range_from(num/2).rev() {
-                if p1 + p2 == num {
-                    count += 1;
-                }
-            }
-        }
-        count
-    }
-}
 
 /**
  * 1. Find all primes under a given number
@@ -128,10 +41,31 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map(|s| s.parse::<usize>())
         .collect::<Result<Vec<usize>, _>>()?;
 
-    let goldbach = GoldbachPartition::with_size(*input_nums.iter().max().ok_or("No Max Value")?);
+    let eratos = Eratosthenes::with_size(*input_nums.iter().max().ok_or("No Value")?);
+
     let mut out = BufWriter::new(stdout());
     for num in input_nums {
-        writeln!(out, "{}", goldbach.solve(num))?;
+        let count = eratos.sieve[..=num/2].iter().enumerate()
+            .filter(|(_, &b)| b)
+            .filter(|(i, _)| eratos.sieve[num - i])
+            .count();
+        writeln!(out, "{count}")?;
     }
+
     Ok(())
+}
+
+#[allow(dead_code)]
+fn binary_search(nums: &[usize], target: usize) -> usize {
+    if nums.len() == 0 {
+        return 0;
+    }
+    let mid = nums.len() / 2;
+    if nums[mid] < target {
+        mid + binary_search(&nums[mid+1..], target) + 1
+    } else if nums[mid] > target {
+        binary_search(&nums[..mid], target)
+    } else {
+        mid
+    }
 }
